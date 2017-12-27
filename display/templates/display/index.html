@@ -1,0 +1,91 @@
+{% extends 'display/base.html' %}
+
+{% block body %}
+
+<div class="starter-template">
+    <h1>JFA 2.0 Xanax use</h1>
+    <p class="lead">This site documents the xanax usage for JFA 2.0 in the game Torn.<br>Individual members can check their data here.</p>
+    <br><br><br>
+
+    <form class="form-inline" role="form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <p class="form-control-static">API Key:</p>
+        </div>
+        <div class="form-group mx-sm-3">
+            <input class="form-control" type="text" id="exampleTextarea" name= "apikey" placeholder= "API Key" value="{{ apikey }}">
+        </div>
+        <button type="submit" class="btn btn-primary" formaction="{% url 'display:check_api' %}">Check your stored data</button>
+        {% if staff %}
+            <button type="submit" class="btn btn-primary" formaction="{% url 'display:show_all_members' %}">Show all members</button>
+        {% endif %}
+    </form>
+    <br>
+
+    {% if error_message %}
+        <br><br><br>
+        <strong>{{ error_message }}</strong>
+    {% endif %}
+
+    {% if member %}
+        <br><br>
+        <div class="row">
+          <div class="table-responsive-sm">
+            <div class="col-md-4">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Age</th>
+                    <th>Faction</th>
+                    <th>Days in Faction</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a href="https://www.torn.com/profiles.php?XID={{ member.member_id }}">{{ member.member_id }}</a></td>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.level }}</td>
+                    <td>{{ member.age }}</td>
+                    <td>{{ faction }}</td>
+                    <td>{{ member.days_in_faction }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    {% endif %}
+
+    {% if data %}
+        <br>
+        <div class="row">
+          <div class="table-responsive">
+            <div class="col-md-4">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Xanax used</th>
+                    <th>Overdosed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for d in data %}
+                    <tr>
+                      <td>{{ d }}</td>
+                      <td>{{ d.xanax_used }}</td>
+                      <td>{{ d.overdosed }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
